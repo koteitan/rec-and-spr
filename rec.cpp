@@ -8,6 +8,10 @@
 #include <string>
 #include <vector>
 
+#ifndef REC_VERSION
+#define REC_VERSION "unknown"
+#endif
+
 #ifdef _WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
@@ -550,8 +554,7 @@ bool list_devices(std::vector<DeviceInfo>& devices, std::string& error) {
         error = "could not create the PulseAudio main loop";
         return false;
     }
-    pa_context* context = pa_context_new(pa_mainloop_get_api(mainloop),
-                                         "loopbackrec");
+    pa_context* context = pa_context_new(pa_mainloop_get_api(mainloop), "rec");
     if (!context) {
         pa_mainloop_free(mainloop);
         error = "could not create a PulseAudio context";
@@ -617,7 +620,7 @@ int record_device(const DeviceInfo& device, const std::string& output_path) {
 
     int pulse_error = 0;
     pa_simple* recorder = pa_simple_new(
-        nullptr, "loopbackrec", 2, device.monitor_source.c_str(),
+        nullptr, "rec", 2, device.monitor_source.c_str(),
         "Loopback recording", &sample_spec, nullptr, nullptr, &pulse_error);
     if (!recorder) {
         std::cerr << "Could not open the monitor source: "
@@ -684,6 +687,10 @@ int record_device(const DeviceInfo& device, const std::string& output_path) {
 }  // namespace
 
 int main(int argc, char* argv[]) {
+    if (argc == 2 && std::strcmp(argv[1], "--version") == 0) {
+        std::cout << "rec " REC_VERSION "\n";
+        return 0;
+    }
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " out.wav\n";
         return 2;

@@ -1,7 +1,14 @@
 #!/bin/sh
+# Local English transcription with WhisperX.
 set -eu
 
 project_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+version=$(cat "$project_dir/VERSION")
+
+if [ "${1:-}" = "--version" ]; then
+    printf 'spr %s\n' "$version"
+    exit 0
+fi
 
 export HF_HOME="${HF_HOME:-$project_dir/.cache/huggingface}"
 export TORCH_HOME="${TORCH_HOME:-$project_dir/.cache/torch}"
