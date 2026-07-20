@@ -684,15 +684,28 @@ int record_device(const DeviceInfo& device, const std::string& output_path) {
 
 #endif
 
+void print_usage(const char* program, std::ostream& output) {
+    output << "Usage: " << program << " [options] <wav>\n"
+           << "Options:\n"
+           << "  -h, --help       Show this help and exit\n"
+           << "  -v, --version    Show the version and exit\n";
+}
+
 }  // namespace
 
 int main(int argc, char* argv[]) {
-    if (argc == 2 && std::strcmp(argv[1], "--version") == 0) {
+    if (argc == 2 && (std::strcmp(argv[1], "--version") == 0 ||
+                      std::strcmp(argv[1], "-v") == 0)) {
         std::cout << "rec " REC_VERSION "\n";
         return 0;
     }
+    if (argc == 2 && (std::strcmp(argv[1], "--help") == 0 ||
+                      std::strcmp(argv[1], "-h") == 0)) {
+        print_usage(argv[0], std::cout);
+        return 0;
+    }
     if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " out.wav\n";
+        print_usage(argv[0], std::cerr);
         return 2;
     }
 

@@ -51,6 +51,51 @@ WHISPERX_MODEL=small.en WHISPERX_BATCH_SIZE=2 ./spr out.wav
 
 話者分離を使う場合はHugging Faceで対象モデルの利用条件へ同意し、`--diarize --hf_token TOKEN`を指定してください。通常の書き起こしと単語単位アラインメントにはトークンは不要です。
 
+# コマンドリファレンス
+
+## コマンド
+
+```text
+./rec.exe [-h|--help] [-v|--version] <wav>                 # Windows
+./rec [-h|--help] [-v|--version] <wav>                     # Linux
+./spr [-h|--help] [-v|--version] [<オプション>...] <音声>...
+```
+
+ヘルプまたはバージョンのオプションを指定した場合、WAVまたは音声ファイルの指定は不要です。`spr`は複数の音声ファイルを一度に受け取れます。
+
+## オプション
+
+### rec
+
+| オプション・引数 | 説明 | 既定値 |
+|---|---|---|
+| `<wav>` | 録音先のWAVファイル | 必須 |
+| `-v`, `--version` | `rec`のバージョンを表示して終了 | ― |
+| `-h`, `--help` | 使用方法を表示して終了 | ― |
+
+### spr
+
+| オプション・引数 | 説明 | 既定値 |
+|---|---|---|
+| `<音声>...` | 書き起こす音声ファイル。複数指定可能 | 必須 |
+| `-v`, `--version` | `spr`のバージョンを表示して終了 | ― |
+| `-h`, `--help` | WhisperXを含む全オプションのヘルプを表示 | ― |
+| `--model <名前>` | 使用するWhisperモデル | `medium.en` |
+| `--device <デバイス>` | 推論デバイス。`cuda`または`cpu` | `cuda` |
+| `--compute_type <型>`, `--type <型>` | 計算精度。`float16`、`float32`、`int8`など | `float16` |
+| `--batch_size <数>`, `--batcha <数>` | 一度に処理する音声区間数 | `4` |
+| `--language <言語コード>`, `--lang <言語コード>` | 音声の言語 | `en` |
+| `--output_dir <ディレクトリ>`, `--dir <ディレクトリ>` | 出力先。存在しない場合は自動作成 | 現在のディレクトリ |
+| `--output_format <形式>`, `--format <形式>` | `all`、`txt`、`srt`、`vtt`、`tsv`、`json`、`aud` | `all` |
+| `--task <処理>` | `transcribe`で書き起こし、`translate`で英訳 | `transcribe` |
+| `--no_align`, `--no-align` | 単語単位の時刻アラインメントを無効化 | 無効 |
+| `--diarize` | 話者分離を有効化 | 無効 |
+| `--min_speakers <数>` | 話者数の下限 | 自動 |
+| `--max_speakers <数>` | 話者数の上限 | 自動 |
+| `--hf_token <トークン>` | 話者分離モデルに使用するHugging Faceトークン | なし |
+
+`spr`が受け付ける全オプションは`./spr --help`で確認できます。
+
 # ビルド・インストール
 
 ## rec

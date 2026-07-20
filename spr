@@ -5,10 +5,14 @@ set -eu
 project_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 version=$(cat "$project_dir/VERSION")
 
-if [ "${1:-}" = "--version" ]; then
-    printf 'spr %s\n' "$version"
-    exit 0
-fi
+for argument do
+    case "$argument" in
+        -v|--version)
+            printf 'spr %s\n' "$version"
+            exit 0
+            ;;
+    esac
+done
 
 whisperx="$project_dir/.venv-whisperx/bin/whisperx"
 if [ ! -x "$whisperx" ]; then
@@ -18,6 +22,28 @@ if [ ! -x "$whisperx" ]; then
         '     uv pip install --python .venv-whisperx/bin/python -r requirements-whisperx.txt' >&2
     exit 127
 fi
+
+# Translate spr's convenience aliases to WhisperX option names. The loop
+# rotates the original arguments and appends each normalized argument, keeping
+# their order and allowing both "--option value" and "--option=value" forms.
+for argument do
+    shift
+    case "$argument" in
+        -h) argument=--help ;;
+        --type) argument=--compute_type ;;
+        --type=*) argument="--compute_type=${argument#*=}" ;;
+        --batcha) argument=--batch_size ;;
+        --batcha=*) argument="--batch_size=${argument#*=}" ;;
+        --lang) argument=--language ;;
+        --lang=*) argument="--language=${argument#*=}" ;;
+        --dir) argument=--output_dir ;;
+        --dir=*) argument="--output_dir=${argument#*=}" ;;
+        --format) argument=--output_format ;;
+        --format=*) argument="--output_format=${argument#*=}" ;;
+        --no-align) argument=--no_align ;;
+    esac
+    set -- "$@" "$argument"
+done
 
 export HF_HOME="${HF_HOME:-$project_dir/.cache/huggingface}"
 export TORCH_HOME="${TORCH_HOME:-$project_dir/.cache/torch}"

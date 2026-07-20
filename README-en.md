@@ -51,6 +51,51 @@ WHISPERX_MODEL=small.en WHISPERX_BATCH_SIZE=2 ./spr out.wav
 
 Speaker diarization requires accepting the relevant model's terms on Hugging Face and passing `--diarize --hf_token TOKEN`. Normal transcription and word-level alignment do not require a token.
 
+# Command reference
+
+## Commands
+
+```text
+./rec.exe [-h|--help] [-v|--version] <wav>                 # Windows
+./rec [-h|--help] [-v|--version] <wav>                     # Linux
+./spr [-h|--help] [-v|--version] [<option>...] <audio>...
+```
+
+When a help or version option is specified, no WAV or audio file is required. `spr` accepts multiple audio files in one invocation.
+
+## Options
+
+### rec
+
+| Option or argument | Description | Default |
+|---|---|---|
+| `<wav>` | Destination WAV file for the recording | Required |
+| `-v`, `--version` | Print the `rec` version and exit | — |
+| `-h`, `--help` | Print usage information and exit | — |
+
+### spr
+
+| Option or argument | Description | Default |
+|---|---|---|
+| `<audio>...` | Audio files to transcribe; multiple files are supported | Required |
+| `-v`, `--version` | Print the `spr` version and exit | — |
+| `-h`, `--help` | Show all options provided by WhisperX | — |
+| `--model <name>` | Whisper model to use | `medium.en` |
+| `--device <device>` | Inference device: `cuda` or `cpu` | `cuda` |
+| `--compute_type <type>`, `--type <type>` | Compute precision such as `float16`, `float32`, or `int8` | `float16` |
+| `--batch_size <number>`, `--batcha <number>` | Number of audio segments processed at once | `4` |
+| `--language <code>`, `--lang <code>` | Language spoken in the audio | `en` |
+| `--output_dir <directory>`, `--dir <directory>` | Output location; created automatically when absent | Current directory |
+| `--output_format <format>`, `--format <format>` | `all`, `txt`, `srt`, `vtt`, `tsv`, `json`, or `aud` | `all` |
+| `--task <task>` | `transcribe` for transcription or `translate` for translation into English | `transcribe` |
+| `--no_align`, `--no-align` | Disable word-level timestamp alignment | Disabled |
+| `--diarize` | Enable speaker diarization | Disabled |
+| `--min_speakers <number>` | Minimum number of speakers | Automatic |
+| `--max_speakers <number>` | Maximum number of speakers | Automatic |
+| `--hf_token <token>` | Hugging Face token used by the diarization model | None |
+
+Run `./spr --help` to see every option accepted by `spr`.
+
 # Build and installation
 
 ## rec
