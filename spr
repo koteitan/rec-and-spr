@@ -10,11 +10,20 @@ if [ "${1:-}" = "--version" ]; then
     exit 0
 fi
 
+whisperx="$project_dir/.venv-whisperx/bin/whisperx"
+if [ ! -x "$whisperx" ]; then
+    printf '%s\n' \
+        'spr: WhisperX is not installed.' \
+        'Run: uv venv .venv-whisperx --python 3.10' \
+        '     uv pip install --python .venv-whisperx/bin/python -r requirements-whisperx.txt' >&2
+    exit 127
+fi
+
 export HF_HOME="${HF_HOME:-$project_dir/.cache/huggingface}"
 export TORCH_HOME="${TORCH_HOME:-$project_dir/.cache/torch}"
 export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$project_dir/.cache}"
 
-exec "$project_dir/.venv-whisperx/bin/whisperx" \
+exec "$whisperx" \
     --model_dir "$project_dir/.models/whisperx" \
     --device "${WHISPERX_DEVICE:-cuda}" \
     --compute_type "${WHISPERX_COMPUTE_TYPE:-float16}" \

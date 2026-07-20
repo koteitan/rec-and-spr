@@ -1,40 +1,47 @@
+[English](README-en.md) | [Japanese](README.md)
+
 # 録音方法
 
 再生デバイスを1つ選び、その出力音声をWAVファイルへループバック録音します。LinuxではPipeWire/PulseAudio、WindowsではWASAPIを使用します。
 
-Linux:
-
-```sh
-./rec out.wav
-```
-
-Windows:
-
-```sh
-./rec.exe out.wav
-```
-
-バージョンは`./rec --version`（Windowsでは`./rec.exe --version`）で確認できます。
-
-表示された再生デバイスの番号を入力すると録音が始まります。`Ctrl+C`で終了するとWAVヘッダーが確定されます。
-
-- 録音中のWAVは未確定のため、必ず`Ctrl+C`で正常終了してください。
-- 通常のRIFF/WAV形式を使うため、1ファイルの上限は4 GiB未満です。
-- Linux版の出力形式は48 kHz、16 bit、ステレオPCMです。
-- Windows版は選択したデバイスの共有モード・ミックス形式をそのまま保存します。
+1. `./rec.exe out.wav`
+2. 再生デバイスの一覧が表示されます。録音したいデバイスの番号を確認してください。
+3. 録音が始まります。
+4. `Ctrl+C`で終了すると wav ファイルが保存されます。
 
 # 書き起こし方法
 
 英語音声向けのWhisperXを実行します。RTX 4060 Ti向けに、`medium.en`モデル、float16、batch size 4が既定値です。
 
 ```sh
-mkdir -p transcript
-./spr out.wav --output_dir transcript --output_format all
+./spr out.wav
 ```
 
 バージョンは`./spr --version`で確認できます。
 
-結果は`transcript`ディレクトリへTXT、SRT、VTT、TSV、JSON形式で出力されます。
+## 出力フォーマット
+
+`--output_format`を省略すると、次の5形式がすべて出力されます。`--output_dir`を省略した場合の出力先は現在のディレクトリです。ファイル名には入力音声と同じベース名が使われます。たとえば`kar.wav`からは`kar.txt`などが生成されます。
+
+| 形式 | 内容 | 主な用途 |
+|---|---|---|
+| TXT | 書き起こした文章だけを保存するプレーンテキスト。タイムスタンプは含みません。 | 内容の確認、文章の編集、コピー＆ペースト |
+| SRT | 連番、開始・終了時刻、字幕本文を持つ一般的な字幕形式。 | 動画プレーヤー、動画編集ソフトへの字幕追加 |
+| VTT | WebVTT規格の字幕形式。SRTに似ていますが、Webでの利用を想定しています。 | HTMLの`<video>`要素、ブラウザ上の字幕表示 |
+| TSV | 開始時刻、終了時刻、本文をタブで区切った表形式。時刻の単位はミリ秒です。 | 表計算ソフトでの確認、スクリプトやプログラムでの処理 |
+| JSON | 言語、セグメント、単語単位の時刻、認識スコアなどを持つ構造化データ。 | 詳細な解析、検索、別プログラムへの入力 |
+
+1形式だけ出力する場合は、たとえば次のように指定します。
+
+```sh
+./spr out.wav --output_format srt
+```
+
+出力先を変更する場合、ディレクトリはWhisperXが自動作成します。
+
+```sh
+./spr out.wav --output_dir transcript
+```
 
 VRAMが足りない場合はモデルまたはバッチサイズを下げられます。
 

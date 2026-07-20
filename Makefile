@@ -8,12 +8,12 @@ CPPFLAGS += -DREC_VERSION=\"$(VERSION)\"
 
 all: rec
 
-rec: rec.cpp
+rec: rec.cpp VERSION
 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) $< -o $@ -Wl,-l:libpulse-simple.so.0 -Wl,-l:libpulse.so.0
 
 windows: rec.exe
 
-rec.exe: rec.cpp
+rec.exe: rec.cpp VERSION
 	x86_64-w64-mingw32-g++ $(CPPFLAGS) $(CXXFLAGS) $< -o $@ -lole32 -luuid -static-libgcc -static-libstdc++
 
 clean:
