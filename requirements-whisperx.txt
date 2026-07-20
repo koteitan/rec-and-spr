@@ -1,0 +1,2 @@
+# Keep the tested local transcription environment reproducible.
+whisperx==3.8.5

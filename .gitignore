@@ -1,0 +1,9 @@
+.venv-whisperx/
+.cache/
+.models/
+/transcript/
+/out.wav
+/commit-msg.txt
+
+loopbackrec
+loopbackrec.exe

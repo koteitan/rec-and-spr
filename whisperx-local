@@ -1,0 +1,17 @@
+#!/bin/sh
+set -eu
+
+project_dir=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+
+export HF_HOME="${HF_HOME:-$project_dir/.cache/huggingface}"
+export TORCH_HOME="${TORCH_HOME:-$project_dir/.cache/torch}"
+export XDG_CACHE_HOME="${XDG_CACHE_HOME:-$project_dir/.cache}"
+
+exec "$project_dir/.venv-whisperx/bin/whisperx" \
+    --model_dir "$project_dir/.models/whisperx" \
+    --device "${WHISPERX_DEVICE:-cuda}" \
+    --compute_type "${WHISPERX_COMPUTE_TYPE:-float16}" \
+    --model "${WHISPERX_MODEL:-medium.en}" \
+    --language "${WHISPERX_LANGUAGE:-en}" \
+    --batch_size "${WHISPERX_BATCH_SIZE:-4}" \
+    "$@"
